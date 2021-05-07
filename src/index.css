@@ -1,0 +1,101 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans+JP&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently */
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+*:focus {
+  outline: none;
+}
+
+/* SCROLLBAR */
+
+html {
+  --scrollbarBG: #CFD8DC;
+  --off-white: #adb2b5;
+  --thumbBG: #90A4AE;
+  --primary-color: #5d7ad8; /* #c47529; */
+  --secondary-color: #efca25;
+  --success-green: #179e19; /* #179e19 */
+  --error-red: #c42929;
+  --disabled-grey: #90A4AE;
+  --dark-text: #525252;
+  --near-black-text: #232323;
+  --form-text: var(--near-black-text);
+  --background-color: #e6e6e6;
+  --focus-input: #d3d3d3;
+
+  /* colors activity */
+  --activity-green: var(--success-green);
+  --activity-yellow: #b4bf02;
+  --activity-purple: #5c02bf;
+  --activity-orange: #bf6a02;
+  --activity-blue: #0234bf;
+  --activity-cyan: #02bf93;
+}
+
+*::-webkit-scrollbar {
+  width: 11px;
+}
+
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--thumbBG) ;
+  border-radius: 6px;
+  border: 3px solid var(--scrollbarBG);
+}
+
+a:hover {
+  color: unset;
+}
+
+a {
+  color: unset;
+  text-decoration: none;
+  transition: color .4s;
+  cursor: pointer;
+}
+
+a:visited {
+color: unset;
+}
