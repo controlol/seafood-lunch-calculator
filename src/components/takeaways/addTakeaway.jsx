@@ -77,7 +77,7 @@ class AddTakeaway extends Component {
 
           <SimpleFormGridResponsive>
             <Label htmlFor="name"> Takeaway name </Label>
-            <Input ref={this.firstFormItem} id="name" name="name" placeholder="Mac Donalds" required value={name} onChange={this.handleInputChange} />
+            <Input ref={this.firstFormItem} id="name" name="name" placeholder="Sakaya" required value={name} onChange={this.handleInputChange} />
 
             <Label htmlFor="address"> Address </Label>
             <Input id="address" name="address" placeholder="Lindengracht 13" required value={address} onChange={this.handleInputChange} />
