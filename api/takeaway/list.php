@@ -7,10 +7,7 @@ $method = $_SERVER["REQUEST_METHOD"];
 
 if ($method == "GET") {
   // return product info
-  if (!isset($_GET["takeaway_name"])) echoMissingData("takeaway_name");
-  $takeaway_name = $conn->real_escape_string($_GET["takeaway_name"]);
-
-  $sql = "SELECT takeaway_id, name, address, city FROM takeaways WHERE name LIKE '%$takeaway_name%';";
+  $sql = "SELECT takeaway_id, name, address, city FROM takeaways ORDER BY takeaway_id DESC;";
   if (!$result = $conn->query($sql)) echoSQLerror($sql, $conn->error);
 
   $res = array();

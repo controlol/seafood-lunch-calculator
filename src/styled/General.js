@@ -1,5 +1,18 @@
 import styled from 'styled-components'
 
+export const MainContainer = styled.div`
+  display: flex;
+  gap: 2rem;
+  flex-direction: column;
+  background: var(--background-gradient-light);
+  padding: 2rem;
+  border-radius: .2rem;
+
+  @media only screen and (max-width: 600px) {
+    padding: unset;
+  }
+`
+
 export const LightBox = styled.div`
   margin: 1em 0.4em;
   background: linear-gradient(60deg,rgba(75,80,85,.5),rgba(125,123,120,.5));
@@ -28,13 +41,24 @@ export const ErrorBox = styled(InfoBox)`
   border: 1px solid rgb(173 54 54);
 `
 
-export const SmallHeader = styled.h1`
+export const Header = styled.h1`
+  padding: .4em .6em;
+  margin: 0;
+  font-weight: 300;
+  color: var(--primary-color);
+  font-size: 2rem;
+  border-bottom: 2px solid var(--primary-color);
+  align-items: center;
+  margin-bottom: 1vh;
+`
+
+export const SmallHeader = styled.h2`
   padding: .4em .6em;
   margin: 0;
   font-weight: 300;
   color: var(--secondary-color);
-  font-size: 1.3em;
-  border-bottom: 2px solid var(--secondary-color);
+  font-size: 1.5rem;
+  border-bottom: 1px solid var(--secondary-color);
   align-items: center;
   margin-bottom: 1vh;
 `

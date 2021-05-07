@@ -6,7 +6,7 @@ require_once "../include/echoResponse.php";
 $method = $_SERVER["REQUEST_METHOD"];
 
 if ($method == "GET") {
-  // return user info
+  // return takeaway info
   if (!isset($_GET["takeaway_id"])) echoMissingData("takeaway_id");
   $takeaway_id = $conn->real_escape_string($_GET["takeaway_id"]);
 
@@ -30,10 +30,10 @@ if ($method == "GET") {
     echoResponse("did not find takeaway", 400);
   }
 } else if ($method == "POST") {
-  // update user info
+  // update takeaway info
   if (!isset($_POST["takeaway_id"])) echoMissingData("takeaway_id");
   $takeaway_id = $_POST["takeaway_id"];
-  if (!is_int($takeaway_id)) echoInvalidData("takeaway_id");
+  if (!is_numeric($takeaway_id)) echoInvalidData("takeaway_id");
 
   $sql = "SELECT * FROM takeaways WHERE takeaway_id = $takeaway_id;";
   if (!$result = $conn->query($sql)) echoSQLerror($sql, $conn->error);
@@ -72,7 +72,7 @@ if ($method == "GET") {
     if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
     echoResponse("updated takeaway details");
   } else {
-    echoResponse("could not find product", 400);
+    echoResponse("could not find takeaway", 400);
   }
 } else if ($method == "PUT") {
   // php does not support body by default for a put request :(
@@ -96,7 +96,7 @@ if ($method == "GET") {
 
   verifyAndFormatTakeawayData($name, $address, $city, $postalcode, $website, $telephone);
 
-  // add a new product
+  // add a new takeaway
   $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE (TABLE_NAME = 'takeaways' AND TABLE_SCHEMA LIKE '$mysqldb');";
   $result = $conn->query($sql);
   if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
@@ -108,7 +108,7 @@ if ($method == "GET") {
 
   $sql = "INSERT INTO takeaways (name, address, city, postalcode, website, telephone) VALUES ('$name', '$address', '$city', '$postalcode', '$website', '$telephone');";
   if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
-  echoResponse("created product");
+  echoResponse("created takeaway");
 } else {
   echoInvalidMethod();
 }
@@ -116,26 +116,29 @@ if ($method == "GET") {
 /**
  * modify data to correct format and verify the data has correct regex
  */
-function verifyAndFormatTakeawayData($name, $address, $city, $postalcode, $website, $telephone) {
+function verifyAndFormatTakeawayData(&$name, &$address, &$city, &$postalcode, &$website, &$telephone) {
   // lower case variables
   $name = strtolower($name);
   $address = strtolower($address);
   $city = strtolower($city);
   $website = strtolower($website);
 
+  $telephone = preg_replace('/\D/', '', $telephone);
+
   // upper case letters postalcode
   $postalcode = strtoupper($postalcode);
   // remove space(s) from postalcode
-  if (strlen($postalcode) > 6) preg_replace(' ', '', $postalcode);
+  if (strlen($postalcode) > 6) $postalcode = preg_replace('/\s+/', '', $postalcode);
 
   // verify valid regex
   if (!preg_match('/^[a-z ]+$/', $name)) echoInvalidData("name");
-  if (!preg_match('/^[a-z ]+ [0-9]+$/', $address)) echoInvalidData("address");
+  if (!preg_match('/^[a-z ]+[0-9]+$/', $address)) echoInvalidData("address");
   if (!preg_match('/^[a-z ]+$/', $city)) echoInvalidData("city");
   if (!preg_match('/^[0-9]{4}[A-Z]{2}$/', $postalcode)) echoInvalidData("postalcode");
   if (!preg_match('/^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)*[a-z0-9|-]{2,62}\.[a-z]{2,8}$/', $website)) echoInvalidData("website");
 
-  if (!is_int($telephone)) echoInvalidData("telephone");
+  if (!is_numeric($telephone)) echoInvalidData("telephone");
+  if (strlen($telephone) < 10) echoInvalidData("telephone");
 
   // uppercase first letter of each word
   $name = ucwords($name);

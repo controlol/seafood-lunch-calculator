@@ -12,7 +12,7 @@ if ($method == "GET") {
 
   if (!isset($_GET["user_id"])) echoMissingData("user_id");
   $user_id = $_GET["user_id"];
-  if (!is_int($user_id)) echoInvalidData("user_id");
+  if (!is_numeric($user_id)) echoInvalidData("user_id");
 
   $sql = "SELECT username, avatar, fullname FROM users WHERE user_id = $user_id;";
   if (!$result = $conn->query($sql)) echoSQLerror($sql, $conn->error);
@@ -43,7 +43,7 @@ if ($method == "GET") {
   if (!isset($_POST["user_id"])) echoMissingData("user_id");
   $fullname = $conn->real_escape_string($_POST["fullname"]);
   $user_id = $_POST["user_id"];
-  if (!is_int($user_id)) echoInvalidData("user_id");
+  if (!is_numeric($user_id)) echoInvalidData("user_id");
 
   $sql = "UPDATE users SET fullname='$fullname' WHERE user_id = $user_id;";
   if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);

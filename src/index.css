@@ -64,6 +64,12 @@ html {
   --activity-orange: #bf6a02;
   --activity-blue: #0234bf;
   --activity-cyan: #02bf93;
+
+  /* background gradients */
+  --background-gradient-light: linear-gradient(60deg, rgba(0,0,0,.1), rgba(0,0,0,.035) 50%);
+
+  /* box shadows */
+  --simple-shadow: 0 .3rem 1.5rem rgba(0,0,0,.3);
 }
 
 *::-webkit-scrollbar {

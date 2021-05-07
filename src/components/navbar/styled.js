@@ -196,7 +196,7 @@ export const NavLogo = styled.img`
 
 export const NavToggleInput = styled.input`
   display: block;
-  background-color: var(--background-color);
+  background-color: var(--primary-color);
   height: .2em;
   width: 2em;
   border-radius: 1em;
@@ -208,7 +208,7 @@ export const NavToggleInput = styled.input`
   &::after,
   &::before {
     display: block;
-    background-color: var(--background-color);
+    background-color: var(--primary-color);
     height: .2em;
     width: 2em;
     border-radius: 1em;

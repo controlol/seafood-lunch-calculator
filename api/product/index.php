@@ -5,6 +5,10 @@ require_once "../include/echoResponse.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 
+// to reindex the table
+// SET @newid=0;
+// UPDATE products SET product_id=(@newid:=@newid+1) ORDER BY product_id;
+
 if ($method == "GET") {
   // return user info
   if (!isset($_GET["product_id"])) echoMissingData("product_id");
@@ -31,7 +35,7 @@ if ($method == "GET") {
   // update user info
   if (!isset($_POST["product_id"])) echoMissingData("product_id");
   $product_id = $_POST["product_id"];
-  if (!is_int($product_id)) echoInvalidData("product_id");
+  if (!is_numeric($product_id)) echoInvalidData("product_id");
 
   $sql = "SELECT * FROM products WHERE product_id = $product_id;";
   if (!$result = $conn->query($sql)) echoSQLerror($sql, $conn->error);
@@ -75,6 +79,8 @@ if ($method == "GET") {
   $name = $conn->real_escape_string($post_data["name"]);
   $price = $post_data["price"];
 
+  $price = preg_replace('/\D/', '', $price);
+
   verifyAndFormatProductData($takeaway_id, $name, $price);
 
   // add a new product
@@ -94,13 +100,13 @@ if ($method == "GET") {
   echoInvalidMethod();
 }
 
-function verifyAndFormatProductData($takeaway_id, $name, $price) {
+function verifyAndFormatProductData(&$takeaway_id, &$name, &$price) {
   $name = strtolower($name);
 
-  if (!preg_match('/^[a-z ]+$/', $name)) echoInvalidData("name");
+  // if (!preg_match('/^[a-z/ ]+$/', $name)) echoInvalidData("name"); ? ^[a-z/\-\\&() ]+$
 
-  if (!is_int($takeaway_id)) echoInvalidData("takeaway_id");
-  if (!is_int($price)) echoInvalidData("price");
+  if (!is_numeric($takeaway_id)) echoInvalidData("takeaway_id");
+  if (!is_numeric($price)) echoInvalidData("price");
 
   $name = ucwords($name);
 }

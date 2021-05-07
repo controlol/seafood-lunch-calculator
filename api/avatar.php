@@ -21,7 +21,7 @@ if ($method == "GET") {
   $base64data =  $_POST["image"];
   $blobData = base64_decode($base64data);
 
-  if (!is_int($user_id)) echoInvalidData("user_id");
+  if (!is_numeric($user_id)) echoInvalidData("user_id");
 
   // create webp data
   $img = new Imagick();
@@ -46,7 +46,7 @@ if ($method == "GET") {
   // delete avatar
   if (!isset($post_data["user_id"])) echoMissingData("user_id");
   $user_id = $post_data["user_id"];
-  if (!is_int($user_id)) echoInvalidData("user_id");
+  if (!is_numeric($user_id)) echoInvalidData("user_id");
 
   $sql = "UPDATE users SET avatar=NULL WHERE user_id = $user_id;";
   if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);

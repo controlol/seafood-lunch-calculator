@@ -8,7 +8,7 @@ $method = $_SERVER["REQUEST_METHOD"];
 if ($method == "GET") {
   if (!isset($_GET["user_id"])) echoMissingData("user_id");
   $user_id = $_GET["user_id"];
-  if (!is_int($user_id));
+  if (!is_numeric($user_id));
   $friend_arr = array();
 
   // return friends from user
@@ -29,8 +29,8 @@ if ($method == "GET") {
   $user_id2 = $post_data["user_id2"];
 
   // validate data
-  if (!is_int($user_id1)) echoInvalidData("user_id1");
-  if (!is_int($user_id2)) echoInvalidData("user_id2");
+  if (!is_numeric($user_id1)) echoInvalidData("user_id1");
+  if (!is_numeric($user_id2)) echoInvalidData("user_id2");
 
   $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE (TABLE_NAME = 'friends' AND TABLE_SCHEMA LIKE '$mysqldb');";
   $result = $conn->query($sql);
@@ -55,8 +55,8 @@ if ($method == "GET") {
   $user_id1 = $post_data["user_id1"];
   $user_id2 = $post_data["user_id2"];
 
-  if (!is_int($user_id1)) echoInvalidData("user_id1");
-  if (!is_int($user_id2)) echoInvalidData("user_id2");
+  if (!is_numeric($user_id1)) echoInvalidData("user_id1");
+  if (!is_numeric($user_id2)) echoInvalidData("user_id2");
 
   $sql =
   "DELETE FROM friends WHERE ".

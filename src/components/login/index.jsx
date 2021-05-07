@@ -58,6 +58,7 @@ class Login extends Component {
 
     return XHR(XHRconfig, "noBearer")
     .then(response => {
+      if (!response.data.token || !response.data.refreshToken) return;
       // store token
       localStorage.setItem("token", response.data.token)
       localStorage.setItem("username", this.state.username)

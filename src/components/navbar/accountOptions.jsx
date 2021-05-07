@@ -22,8 +22,8 @@ class AccountOptions extends Component {
         <Link to="/account/me">
           <SubmenuItem> { localStorage.getItem('username') } </SubmenuItem>
         </Link>
-        <Link to="/account/usage">
-          <SubmenuItem> Usage </SubmenuItem>
+        <Link to="/account/friends">
+          <SubmenuItem> Friends </SubmenuItem>
         </Link>
         <SubmenuItem onClick={this.logOut}> Log out </SubmenuItem>
       </Submenu>

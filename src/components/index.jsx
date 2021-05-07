@@ -6,6 +6,10 @@ import styled from 'styled-components'
 import Navbar from './navbar'
 
 import Products from './products'
+import Orders from './orders'
+import Account from './account'
+import Takeaways from './takeaways'
+import { MainContainer } from '../styled/General'
 
 const Main = styled.div`
   max-width: 1500px;
@@ -28,11 +32,11 @@ class PageRouter extends Component {
   constructor() {
     super()
     this.state = {
-      loggedIn: false
+      loggedIn: true
     }
   }
 
-  componentDidMount = () => this.verifyJWT()
+  // componentDidMount = () => this.verifyJWT()
 
   verifyJWT = () => {
     if (!localStorage.getItem('token')) return this.props.history.push("/login")
@@ -53,11 +57,16 @@ class PageRouter extends Component {
   render() {
     if (this.state.loggedIn) return (
       <Fragment>
-        <Route path="/" component={Navbar} />
+      <Route path="/" component={Navbar} />
         <Main>
-          <Switch>
-            <Route path="/products" component={Products} />
-          </Switch>
+          <MainContainer>
+            <Switch>
+              <Route path="/orders" component={Orders} />
+              <Route path="/products" component={Products} />
+              <Route path="/takeaways" component={Takeaways} />
+              <Route path="/account" component={Account} />
+            </Switch>
+          </MainContainer>
         </Main>
       </Fragment>
     )

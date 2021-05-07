@@ -57,32 +57,32 @@ class Navbar extends Component {
 
     return (
       <HeaderStyle style={headerStyle}>
-        <Link to="/site">
+        <Link to="/orders">
           <NavLogo src={localStorage.getItem('logo') ? localStorage.getItem('logo') : Logo} alt="Web-Fuse Logo" width="48" height="48" />
         </Link>
 
         <NavStyle style={navStyle}>
           <HeaderItems>
-            <Link to="/site" onClick={this.hideDropdown}>
+            <Link to="/orders" onClick={this.hideDropdown}>
               <HeaderTextBox>
-                <HeaderText style={Object.assign({ color: /^\/site.*/.test(pathname) ? "var(--secondary-color)" : "var(--primary-color)"}, headerTextStyle)}>
-                  Websites
+                <HeaderText style={Object.assign({ color: /^\/orders.*/.test(pathname) ? "var(--secondary-color)" : "var(--primary-color)"}, headerTextStyle)}>
+                  Orders
                 </HeaderText>
               </HeaderTextBox>
             </Link>
 
-            <Link to="/backup" onClick={this.hideDropdown}>
+            <Link to="/products" onClick={this.hideDropdown}>
               <HeaderTextBox>
-                <HeaderText style={Object.assign({ color: /^\/backup.*/.test(pathname) ? "var(--secondary-color)" : "var(--primary-color)"}, headerTextStyle)}>
-                  Backups
+                <HeaderText style={Object.assign({ color: /^\/products.*/.test(pathname) ? "var(--secondary-color)" : "var(--primary-color)"}, headerTextStyle)}>
+                  Products
                 </HeaderText>
               </HeaderTextBox>
             </Link>
 
-            <Link to="/users" onClick={this.hideDropdown}>
+            <Link to="/takeaways" onClick={this.hideDropdown}>
               <HeaderTextBox>
-                <HeaderText style={Object.assign({ color: /^\/users.*/.test(pathname) ? "var(--secondary-color)" : "var(--primary-color)"}, headerTextStyle)}>
-                  Users
+                <HeaderText style={Object.assign({ color: /^\/takeaways.*/.test(pathname) ? "var(--secondary-color)" : "var(--primary-color)"}, headerTextStyle)}>
+                  Takeaways
                 </HeaderText>
               </HeaderTextBox>
             </Link>

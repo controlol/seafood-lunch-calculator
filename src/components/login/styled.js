@@ -7,8 +7,8 @@ export const LoginContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   border-radius: .3rem;
-  box-shadow: 0 .3rem 1.5rem rgba(0,0,0,.3);
-  background: linear-gradient(60deg, rgba(0,0,0,.25), rgba(0,0,0,.05) 50%);
+  box-shadow: var(--simple-shadow);
+  background: var(--background-gradient-light);
   transform: translate(-50%, -50%);
   max-width: 1000px;
   width: max-content;
