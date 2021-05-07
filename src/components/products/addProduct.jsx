@@ -97,7 +97,7 @@ class AddProduct extends Component {
             <Button type="button" tabIndex="-1"> Add takeaway </Button>
 
             <Label htmlFor="price"> Price </Label>
-            <Input id="price" name="price" placeholder="2,00" rquired value={price} onChange={this.handleInputChange} />
+            <Input id="price" name="price" placeholder="2,00" required value={price} onChange={this.handleInputChange} />
             <span> ({ priceStr }) </span>
           </SimpleFormGridResponsiveWithButton>
 

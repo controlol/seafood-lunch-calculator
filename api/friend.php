@@ -6,8 +6,10 @@ require_once "include/echoResponse.php";
 $method = $_SERVER["REQUEST_METHOD"];
 
 if ($method == "GET") {
-  if (!isset($_GET["user_id"])) echoMissingData("user_id");
-  $user_id = $_GET["user_id"];
+  // if (!isset($_GET["user_id"])) echoMissingData("user_id");
+  // $user_id = $_GET["user_id"];
+  // temporary userid will become the jwt later
+  $user_id = 1;
   if (!is_numeric($user_id));
   $friend_arr = array();
 
@@ -75,14 +77,15 @@ if ($method == "GET") {
   echoInvalidMethod();
 }
 
-function fetchUserFriends($arr, $uid) {
+function fetchUserFriends(&$arr, $uid) {
   // first get friends in one direction
   $sql = "SELECT u.user_id, u.avatar, u.username FROM friends f INNER JOIN users u ON f.user_id2 = u.user_id WHERE user_id1 = $uid;";
   if (!$result = $conn->query($sql)) echoSQLerror($sql, $conn->error);
+
   appendUserInfo($arr, $result, $uid);
 }
 
-function appendUserInfo($arr, $rows, $uid) {
+function appendUserInfo(&$arr, $rows, $uid) {
   while ($r = $rows->fetch_assoc()) {
     $user_id = $userinfo["user_id"];
 
