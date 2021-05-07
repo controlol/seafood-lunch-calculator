@@ -1,14 +1,14 @@
 <?php
 
-require "../include/dbh.php";
-require "../include/encrypt.php";
-require "../include/echoResponse.php";
+require_once "../include/dbh.php";
+require_once "../include/encrypt.php";
+require_once "../include/echoResponse.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 
 if ($method == "GET") {
   // return user info
-  require "../friend.php";
+  require_once "../friend.php";
 
   if (!isset($_GET["user_id"])) echoMissingData("user_id");
   $user_id = $_GET["user_id"];

@@ -1,7 +1,7 @@
 <?php
 
-require "../include/dbh.php";
-require "../include/echoResponse.php";
+require_once "../include/dbh.php";
+require_once "../include/echoResponse.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 

@@ -1,8 +1,9 @@
 <?php
 
-require "../include/dbh.php";
-require "../include/encrypt.php";
-require "../include/echoResponse.php";
+require_once "../include/dbh.php";
+require_once "../include/jwt.php";
+require_once "../include/encrypt.php";
+require_once "../include/echoResponse.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 
