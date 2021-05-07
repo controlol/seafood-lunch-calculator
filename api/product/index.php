@@ -89,7 +89,7 @@ if ($method == "GET") {
   if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
 
   if ($result->num_rows == 0) {
-    $sql = "CREATE TABLE products (product_id int(11) NOT NULL AUTO_INCREMENT, takeaway_id int(11) NOT NULL, name varchar(64) NOT NULL, price int(4) NOT NULL, avatar BLOB, PRIMARY KEY (product_id));";
+    $sql = "CREATE TABLE products (product_id int(11) NOT NULL AUTO_INCREMENT, takeaway_id int(11) NOT NULL, name varchar(64) NOT NULL, price int(4) UNSIGNED NOT NULL, avatar BLOB, PRIMARY KEY (product_id));";
     if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
   }
 
