@@ -7,15 +7,42 @@ import { Input, Label } from '../../styled/Form'
 import { Header } from '../../styled/General'
 import { ListContainer } from '../../styled/List'
 import AddOrderUser from './addOrderUser'
+import { SimpleFormGridResponsive } from '../../styled/Grid'
 
 class AddOrder extends Component {
   constructor() {
     super()
     this.state = {
-      products: [],
-      friends: [],
+      products: [
+        {
+          id: 1,
+          name: "pizza",
+          takeaway_name: "adam",
+          takeaway_id: 2,
+          price: 1000
+        }
+      ],
+      friends: [
+        {
+          id: 1,
+          username: "dikzak",
+          pending: false,
+          avatar: ""
+        }
+      ],
       order: []
     }
+
+    let order = this.state.order
+    order["1"] = [{
+      id: 1,
+      name: "pizza",
+      takeaway_name: "adam",
+      takeaway_id: 2,
+      price: 1000,
+      amount: 5
+    }]
+    this.setState({ order })
 
     this.newUserRef = createRef()
   }
@@ -42,12 +69,13 @@ class AddOrder extends Component {
 
   addOrderUser = () => {
     const username = this.newUserRef.current.value,
-          uid = this.state.friends.filter(v => v.username === username)[0]
+          uid = this.state.friends.filter(v => v.username === username)[0].id
 
     if (!uid) return;
 
     let order = this.state.order
     order[uid] = []
+    console.log(uid, order)
     this.setState({ order })
   }
 
@@ -63,10 +91,11 @@ class AddOrder extends Component {
   addItem = (uid, {target}) => {
     const itemName = target.value,
           item = this.state.products.filter(v => v.name === itemName)[0]
-    if (!item) return;
+    if (!item) return false
     let order = this.state.order
     order[uid].push(Object.assign({ amount: 1 }, item))
     this.setState({ order })
+    return true
   }
 
   changeItem = (uid, oldid, {target}) => {
@@ -81,8 +110,8 @@ class AddOrder extends Component {
   }
 
   changeAmount = (uid, id, {target}) => {
-    const amount = target.value
-    if (amount < 1 && amount > 99) return;
+    const amount = target.value === 0 ? 0 : Number.parseInt(target.value) || ""
+    if ((amount < 1 || amount > 99) && amount !== "") return;
     let order = this.state.order
     let item = order[uid].filter(v => v.id === id)[0]
     if (!item) return;
@@ -102,7 +131,7 @@ class AddOrder extends Component {
         {
           Object.keys(order).map(k => {
             const v = order[k]
-            const username = friends.filter(v => v.id === k)[0]
+            const username = friends.filter(v => v.id == k)[0].username
 
             return <AddOrderUser
               key={"order" + k}
@@ -123,10 +152,10 @@ class AddOrder extends Component {
             order.length === order.filter(v => v.length > 0).length ||
             !order.length
           ) &&
-          <Fragment>
+          <SimpleFormGridResponsive>
             <Label htmlFor="newUser"> Add user </Label>
             <Input ref={this.newUserRef} id="newUser" onChange={this.addOrderUser} list="friend-list" />
-          </Fragment>
+          </SimpleFormGridResponsive>
         }
 
         <datalist id="friend-list">
