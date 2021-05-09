@@ -9,7 +9,7 @@ if ($method == "GET") {
   // if (!isset($_GET["user_id"])) echoMissingData("user_id");
   // $user_id = $_GET["user_id"];
   // temporary userid will become the jwt later
-  $user_id = 1;
+  $user_id = 2;
   if (!is_numeric($user_id));
   $friend_arr = array();
 
