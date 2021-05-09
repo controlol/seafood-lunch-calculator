@@ -89,15 +89,15 @@ class AddProduct extends Component {
 
           <SimpleFormGridResponsiveWithButton>
             <Label htmlFor="name"> Product name </Label>
-            <Input ref={this.firstFormItem} id="name" name="name" placeholder="Fries" required value={name} onChange={this.handleInputChange} />
+            <Input ref={this.firstFormItem} id="name" name="name" placeholder="Fries" required  autoComplete="off" value={name} onChange={this.handleInputChange} />
             <span />
 
             <Label htmlFor="takeaway"> Takeaway </Label>
-            <Input id="takeaway" name="takeaway" list="takeaway-list" placeholder="Mac Donalds" required value={takeaway} onChange={this.handleInputChange} />
+            <Input id="takeaway" name="takeaway" list="takeaway-list" placeholder="Mac Donalds" required  autoComplete="off" value={takeaway} onChange={this.handleInputChange} />
             <Button type="button" tabIndex="-1"> Add takeaway </Button>
 
             <Label htmlFor="price"> Price </Label>
-            <Input id="price" name="price" placeholder="2,00" required value={price} onChange={this.handleInputChange} />
+            <Input id="price" name="price" placeholder="2,00" required autoComplete="off" value={price} onChange={this.handleInputChange} />
             <span> ({ priceStr }) </span>
           </SimpleFormGridResponsiveWithButton>
 

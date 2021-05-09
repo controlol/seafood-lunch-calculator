@@ -84,14 +84,12 @@ if ($method == "GET") {
 
   foreach ($order as $k => $v) {
     // $k == $ordered_by
-    // $v == [{ amount, product_id }]
-    foreach($v as $vv) {
-      $pid = $vv["product_id"];
-      $amount = $vv["amount"];
-      $sql = "INSERT INTO ordered_items (order_id, ordered_for, product_id, amount) VALUES ('$order_id', '$k', '$pid', '$amount');";
+    // $v == { product_id: amount }
+    foreach($v as $k2 => $v2) {
+      $sql = "INSERT INTO ordered_items (order_id, ordered_for, product_id, amount) VALUES ('$order_id', '$k', '$k2', '$v2');";
       if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
     }
-    unset($vv);
+    unset($k2, $v2);
   }
 
   echoResponse("craeted order");

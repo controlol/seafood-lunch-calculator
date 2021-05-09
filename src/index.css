@@ -67,6 +67,7 @@ html {
 
   /* background gradients */
   --background-gradient-light: linear-gradient(60deg, rgba(0,0,0,.1), rgba(0,0,0,.035) 50%);
+  --background-gradient-medium: linear-gradient(60deg, rgba(0,0,0,.2), rgba(0,0,0,.12) 90%);
 
   /* box shadows */
   --simple-shadow: 0 .3rem 1.5rem rgba(0,0,0,.3);

@@ -4,11 +4,15 @@ export const SimpleFormGridResponsive = styled.div`
   margin: 1em 0;
   display: grid;
   grid-template-columns: max-content auto;
-  gap: .8rem 1.5rem;
+  gap: .8rem 1rem;
   align-items: flex-start;
 
   * {
     margin: 0;
+  }
+
+  label {
+    margin: .1rem 0;
   }
 
   /* @media screen and (max-width: 1000px) { grid-template-columns: auto; }
