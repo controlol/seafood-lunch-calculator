@@ -37,8 +37,8 @@ function verifyJWT() {
   $uid = $d["user_id"];
   $dJwtKey = $d["jwtKey"];
 
-  if ($dJwtKey !== $jwtKey) return false;
-  if ($date + $validTime < time()) return false;
+  if ($dJwtKey !== $jwtKey) echoResponse("jwt expired", 401);
+  if ($date + $validTime < time()) echoResponse("jwt expired", 401);
   return $uid;
 }
 
