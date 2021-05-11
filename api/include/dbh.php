@@ -7,6 +7,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+date_default_timezone_set ("Europe/Amsterdam");
+
 $mysqlserver = "SQL_fbcs_nl";
 $mysqluser = "fbcs_nl";
 $mysqlpass = "763c1a02122f";
