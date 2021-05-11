@@ -105,7 +105,7 @@ class AddOrder extends Component {
     .catch(err => {})
   }
 
-  renderFriendsOptionList = () => this.props.friends.filter(v => Object.keys(this.state.order).filter(o => (Number)(v.id) === (Number)(o)).length === 0 && v.pending === false).map(v => <option key={"friend_" + v.id} value={v.username}> { v.username } </option>)
+  renderFriendsOptionList = () => this.props.friends.filter(v => Object.keys(this.state.order).filter(o => (Number)(v.id) === (Number)(o)).length === 0 && !v.pending).map(v => <option key={"friend_" + v.id} value={v.username}> { v.username } </option>)
 
   render() {
     const { order } = this.state
@@ -126,7 +126,7 @@ class AddOrder extends Component {
         <Header> Add order </Header>
 
         {
-          friends.filter(v => Object.keys(this.state.order).filter(o => (Number)(v.id) === (Number)(o)).length === 0 && v.pending === false).length > 0 &&
+          friends.filter(v => Object.keys(this.state.order).filter(o => (Number)(v.id) === (Number)(o)).length === 0 && !v.pending).length > 0 &&
           <AddUserWrapper>
             {
               friends.length > 1 &&
