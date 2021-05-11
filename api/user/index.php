@@ -9,6 +9,8 @@ $method = $_SERVER["REQUEST_METHOD"];
 
 // $uid = verifyJWT();
 
+$uid = 2;
+
 if ($method == "GET") {
   // return user info
   require_once "../friend/function.php";
@@ -30,7 +32,7 @@ if ($method == "GET") {
       "username" => $username,
       "avatar" => $avatar,
       "fullname" => $fullname,
-      "friends" => $friendArr
+      "friends" => $friendArr["friend"]
     );
 
     echoResponse($res);

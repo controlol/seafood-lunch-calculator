@@ -1,17 +1,15 @@
 <?php
 
-require_once "include/dbh.php";
-require_once "include/echoResponse.php";
+require_once "../include/dbh.php";
+require_once "../include/jwt.php";
+require_once "../include/echoResponse.php";
 require_once "function.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 
+$uid = verifyJWT();
+
 if ($method == "GET") {
-  // if (!isset($_GET["user_id"])) echoMissingData("user_id");
-  // $user_id = $_GET["user_id"];
-  // temporary userid will become the jwt later
-  $user_id = 2;
-  if (!is_numeric($user_id));
   $friend_arr = array();
 
   // return friends from user
