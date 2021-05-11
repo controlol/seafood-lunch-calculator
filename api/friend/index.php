@@ -2,6 +2,7 @@
 
 require_once "include/dbh.php";
 require_once "include/echoResponse.php";
+require_once "function.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 
@@ -39,7 +40,14 @@ if ($method == "GET") {
   if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
 
   if ($result->num_rows == 0) {
-    $sql = "CREATE TABLE friends (user_id1 int(11) NOT NULL, user_id2 int(11) NOT NULL, PRIMARY KEY (user_id1, user_id2));";
+    $sql = "CREATE TABLE friends
+            (
+              user_id1 int(11) NOT NULL,
+              user_id2 int(11) NOT NULL,
+              UNIQUE (user_id1, user_id2),
+              FOREIGN KEY (user_id1) REFERENCES users(user_id),
+              FOREIGN KEY (user_id2) REFERENCES users(user_id)
+            );";
     if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
   }
 
@@ -75,31 +83,6 @@ if ($method == "GET") {
   echoResponse("deleted friend");
 } else {
   echoInvalidMethod();
-}
-
-function fetchUserFriends(&$arr, $uid) {
-  global $conn;
-  // first get friends in one direction
-  $sql = "SELECT u.user_id, u.avatar, u.username FROM friends f INNER JOIN users u ON f.user_id2 = u.user_id WHERE user_id1 = $uid;";
-  if (!$result = $conn->query($sql)) echoSQLerror($sql, $conn->error);
-
-  appendUserInfo($arr, $result, $uid);
-}
-
-function appendUserInfo(&$arr, $rows, $uid) {
-  while ($r = $rows->fetch_assoc()) {
-    global $conn;
-    $user_id = $r["user_id"];
-
-    // check if both users added each other
-    $sql = "SELECT user_id1 FROM friends WHERE ( user_id1 = $user_id AND user_id2 = $uid );";
-    if (!$result = $conn->query($sql)) echoSQLerror($sql, $conn->error);
-    $pending = $result->num_rows == 1 ? false : true;
-
-    $avatar = $r["avatar"];
-    $username = $r["username"];
-    array_push($arr, array("id" => $user_id, "avatar" => base64_encode($avatar), "username" => $username, "pending" => $pending));
-  }
 }
 
 ?>
