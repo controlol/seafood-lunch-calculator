@@ -7,7 +7,7 @@ require_once "../include/echoResponse.php";
 $method = $_SERVER["REQUEST_METHOD"];
 
 if ($method == "GET") {
-  if (!verifyJWT()) echoResponse("invalid token", 401);
+  verifyJWT();
   echoResponse("valid token");
 } else {
   echoInvalidMethod();
