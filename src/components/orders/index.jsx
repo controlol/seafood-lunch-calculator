@@ -52,7 +52,8 @@ class Orders extends Component {
         //   pending: false,
         //   avatar: ""
         // }
-      ]
+      ],
+      user_id: 0
     }
   }
 
@@ -72,9 +73,10 @@ class Orders extends Component {
     })
     .then(response => {
       if (typeof response.data === "object") {
-        const { id, username, friends } = response.data
-        friends.push({ id, username, pending: false, avatar: "" })
-        this.setState({ friends })
+        let { id, username, friends } = response.data
+        friends[id] = {username, avatar: ""}
+        // friends.push({ id, username, pending: false, avatar: "" })
+        this.setState({ friends, user_id: id })
       }
     })
     .catch(err => {})
@@ -96,7 +98,7 @@ class Orders extends Component {
   }
 
   render() {
-    const { orders, friends, products } = this.state
+    const { orders, friends, products, user_id } = this.state
 
     if (this.props.match.params.orderId) return (
       <OrderInfo orderId={this.props.match.params.orderId} history={this.props.history} friends={friends} />
@@ -106,7 +108,7 @@ class Orders extends Component {
 
     return (
       <Fragment>
-        <AddOrder addOrder={this.addOrder} friends={friends} products={products} />
+        <AddOrder addOrder={this.addOrder} friends={friends} user_id={user_id} products={products} />
 
         <ListContainer>
           {

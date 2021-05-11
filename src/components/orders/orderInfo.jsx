@@ -46,11 +46,11 @@ class OrderInfo extends Component {
           <OrderSummaryHeader>
             <OrderTitleAmount>
               <p> Created by: </p>
-              <strong> { friends.filter(v => (Number)(v.id) === (Number)(created_by))[0]?.username || `unknown (${created_by})` } </strong>
+              <strong> { friends[created_by]?.username || `unknown (${created_by})` } </strong>
             </OrderTitleAmount>
             <OrderTitleAmount>
               <p> Paid by: </p>
-              <strong> { friends.filter(v => (Number)(v.id) === (Number)(paid_by))[0]?.username || `unknown (${created_by})` } </strong>
+              <strong> { friends[paid_by]?.username || `unknown (${created_by})` } </strong>
             </OrderTitleAmount>
             <OrderTitleAmount>
               <p> Paid amount: </p>

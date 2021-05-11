@@ -30,10 +30,10 @@ class Order extends Component {
       <OrderItemList onClick={() => history.push("/orders/" + orderId)}>
         <OrderUserGrid>
           <p> Created by: </p>
-          <strong> { friends.filter(v => (Number)(v.id) === (Number)(created_by))[0]?.username || `unknown (${created_by})` } </strong>
+          <strong> { friends[created_by]?.username || `unknown (${created_by})` } </strong>
 
           <p> Paid by: </p>
-          <strong> { friends.filter(v => (Number)(v.id) === (Number)(paid_by))[0]?.username || `unknown (${paid_by})` } </strong>
+          <strong> { friends[paid_by]?.username || `unknown (${paid_by})` } </strong>
         </OrderUserGrid>
 
         <div style={{ display: "flex", gap: "1rem" }}>

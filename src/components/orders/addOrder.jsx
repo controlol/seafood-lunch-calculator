@@ -29,7 +29,8 @@ class AddOrder extends Component {
 
   addOrderUser = () => {
     const username = this.newUserRef.current.value,
-          uid = this.props.friends.filter(v => v.username === username)[0]?.id
+          uid = Object.keys(this.props.friends).filter(k => this.props.friends[k].username === username)[0]
+          // uid = this.props.friends.filter(v => v.username === username)[0]?.id
 
     if (!uid) return;
 
@@ -41,7 +42,8 @@ class AddOrder extends Component {
 
   changeUser = (olduid, {target}) => {
     const username = target.value,
-          newuid = this.props.friends.filter(v => v.username === username)[0]?.id
+          newuid = Object.keys(this.props.friends).filter(k => this.props.friends[k] === username)[0]
+          // newuid = this.props.friends.filter(v => v.username === username)[0]?.id
     if (!newuid || olduid === newuid) return;
     let order = this.state.order
     delete Object.assign(order, {[newuid]: order[olduid] })[olduid]
@@ -93,8 +95,10 @@ class AddOrder extends Component {
     .then(response => {
       if (response.data.order_id) {
         this.props.addOrder({
-          created_by: this.props.friends[this.props.friends.length - 1].id,
-          paid_by: this.props.friends[this.props.friends.length - 1].id,
+          created_by: this.props.user_id,
+          created_by: this.props.user_id,
+          // paid_by: this.props.friends[this.props.friends.length - 1].id,
+          // paid_by: this.props.friends[this.props.friends.length - 1].id,
           paid_amount: 0,
           date: new Date().toLocaleString(),
           items: this.state.order
@@ -105,7 +109,17 @@ class AddOrder extends Component {
     .catch(err => {})
   }
 
-  renderFriendsOptionList = () => this.props.friends.filter(v => Object.keys(this.state.order).filter(o => (Number)(v.id) === (Number)(o)).length === 0 && !v.pending).map(v => <option key={"friend_" + v.id} value={v.username}> { v.username } </option>)
+  // renderFriendsOptionList = () => this.props.friends.filter(v => Object.keys(this.state.order).filter(o => (Number)(v.id) === (Number)(o)).length === 0 && !v.pending).map(v => <option key={"friend_" + v.id} value={v.username}> { v.username } </option>)
+  renderFriendsOptionList = () => 
+    Object.keys(this.props.friends)
+    .filter(uid => 
+      Object.keys(this.state.order)
+      .filter(o => (Number)(uid) === (Number)(o)).length === 0)
+    .map(uid => {
+      const { username } = this.props.friends[uid]
+
+      return <option key={"friend_" + uid} value={username}> { username } </option>
+    })
 
   render() {
     const { order } = this.state
@@ -126,10 +140,13 @@ class AddOrder extends Component {
         <Header> Add order </Header>
 
         {
-          friends.filter(v => Object.keys(this.state.order).filter(o => (Number)(v.id) === (Number)(o)).length === 0 && !v.pending).length > 0 &&
+          Object.keys(this.props.friends)
+          .filter(uid => 
+            Object.keys(this.state.order)
+            .filter(o => (Number)(uid) === (Number)(o)).length === 0).length > 0 &&
           <AddUserWrapper>
             {
-              friends.length > 1 &&
+              Object.keys(friends).length > 1 &&
                 <SimpleFormGridResponsive>
                   <Label htmlFor="newUser" style={{ fontSize: "1.2rem" }}> Add user </Label>
                   <Input ref={this.newUserRef} id="newUser" autoComplete="off" onChange={this.addOrderUser} list="friend-list" />
@@ -137,7 +154,7 @@ class AddOrder extends Component {
             }
 
             {
-              friends.length === 1 &&
+              Object.keys(friends).length === 1 &&
               <h3 style={{ textAlign: "center", padding: "1rem" }}> To create an order you need to add friends first </h3>
             }
           </AddUserWrapper>
@@ -146,7 +163,8 @@ class AddOrder extends Component {
         {
           Object.keys(order).map(k => {
             const v = order[k]
-            const username = friends.filter(v => (Number)(v.id) === (Number)(k))[0].username
+            const username = friends[k].username
+            // const username = friends.filter(v => (Number)(v.id) === (Number)(k))[0].username
 
             return <AddOrderUser
               key={"order" + k}
