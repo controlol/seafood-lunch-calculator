@@ -6,25 +6,61 @@ require_once "../include/jwt.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 
-// get the uid :) and verify JWT
-// $uid = verifyJWT();
+$uid = verifyJWT();
 
 if ($method == "GET") {
+  if (!isset($_GET["order_id"])) echoMissingData("order_id");
+  $order_id = $_GET["order_id"];
+  if (!is_numeric($order_id)) echoInvalidData("order_id");
 
+  $sql = "SELECT order_id, created_by, paid_by, paid_amount, date FROM orders WHERE order_id = $order_id;";
+  if (!$result = $conn->query($sql)) echoSQLerror($sql, $conn->error);
+
+  if ($result->num_rows == 1) {
+    $orderInfo = $result->fetch_assoc();
+
+    $order_id = $orderInfo["order_id"];
+
+    $res = array(
+      "created_by" => $orderInfo["created_by"],
+      "paid_by" => $orderInfo["paid_by"],
+      "paid_amount" => $orderInfo["paid_amount"],
+      "date" => $orderInfo["date"]
+    );
+
+    $sql = "SELECT i.amount, i.ordered_for, p.product_id, p.name AS product_name, p.price, t.name AS takeaway_name
+            FROM ordered_items i
+            INNER JOIN orders o
+              ON i.order_id = o.order_id
+            INNER JOIN products p
+              ON i.product_id = p.product_id
+            INNER JOIN takeaways t
+              ON p.takeaway_id = t.takeaway_id
+            WHERE i.order_id = $order_id;";
+    if (!$products = $conn->query($sql)) echoSQLerror($sql, $conn->error);
+
+    while ($p = $products->fetch_assoc()) {
+      $res["order"][$p["ordered_for"]][$p["product_id"]] = array(
+        "amount" => $p["amount"],
+        // "product_id" => $p["product_id"],
+        "price" => $p["price"],
+        "product_name" => $p["product_name"],
+        "takeaway_name" => $p["takeaway_name"],
+      );
+    }
+
+    echoResponse($res);
+  } else {
+    echoResponse("could not find order", 400);
+  }
 } else if ($method == "POST") {
 
 } else if ($method == "PUT") {
   // insert order here
   // php does not support body by default for a put request :(
-  parse_str(file_get_contents("php://input"), $post_data);
-  // temporarily set a uid for testing
-  if (!$uid) $uid = 1;
+  $order = json_decode(file_get_contents("php://input"));
 
-  if (!isset($post_data["order"])) echeMissingData("order");
-
-  $order = json_decode($post_data["order"], true);
-
-  if (!$order) echoInvalidData("order");
+  if (!$order) echoMissingData("order");
 
   // get highest user_id
   $sql = "SELECT user_id FROM users ORDER BY user_id DESC LIMIT 1;";
@@ -36,22 +72,19 @@ if ($method == "GET") {
   if (!$result = $conn->query($sql)) echoSQLerror($sql, $conn->error);
   $largest_product_id = $result->fetch_assoc()["product_id"];
 
-  // verify order array
   foreach ($order as $k => $v) {
-    if (!is_numeric($k)) echoResponse($k . " is not a number", 400);
+    if (!is_numeric($k)) echoResponse("user_id " . $k . " is not a number", 400);
     if ($k > $largest_user_id) echoResponse($k . " is not a valid user_id");
 
-    foreach ($v as $vv) {
-      $pid = $vv["product_id"];
-      $amount = $vv["amount"];
-      if (!is_numeric($pid)) echoResponse($pid . " is not a number", 400);
-      if (!is_numeric($amount)) echoResponse($amount . " is not a number", 400);
+    foreach($v as $k2 => $v2) {
+      if (!is_numeric($k2)) echoResponse("product_id " . $k2 . " is not a number", 400);
+      if (!is_numeric($v2)) echoResponse("amount " . $v2 . " is not a number", 400);
 
-      if ($pid > $largest_product_id) echoResponse($pid . " is not a valid product_id");
-      if ($amount < 1 || $amount > 99) echoResponse($amount . " is not a valid amount");
+      if ($k2 > $largest_product_id) echoResponse($k2 . " is not a valid product_id");
+      if ($v2 < 1 || $v2 > 99) echoResponse($v2 . " is not a valid amount");
     }
     // to prevent errors, scopes in php are weird
-    unset($vv);
+    unset($k2, $v2);
   }
   // to prevent errors, scopes in php are weird
   unset($k, $v);
@@ -62,7 +95,17 @@ if ($method == "GET") {
   if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
 
   if ($result->num_rows == 0) {
-    $sql = "CREATE TABLE orders (order_id int(11) NOT NULL AUTO_INCREMENT, created_by int(11) NOT NULL, paid_by int(11) NOT NULL, paid_amount int(5) UNSIGNED NOT NULL, date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (order_id));";
+    $sql = "CREATE TABLE orders
+            (
+              order_id int(11) NOT NULL AUTO_INCREMENT,
+              created_by int(11) NOT NULL,
+              paid_by int(11) NOT NULL,
+              paid_amount int(5) UNSIGNED DEFAULT 0,
+              date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              PRIMARY KEY (order_id),
+              FOREIGN KEY (created_by) REFERENCES users(user_id),
+              FOREIGN KEY (paid_by) REFERENCES users(user_id)
+            );";
     if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
   }
 
@@ -72,12 +115,22 @@ if ($method == "GET") {
   if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
 
   if ($result->num_rows == 0) {
-    $sql = "CREATE TABLE ordered_items (order_id int(11) NOT NULL, ordered_for int(11) NOT NULL, product_id int(11) NOT NULL, amount int(2) UNSIGNED NOT NULL, PRIMARY KEY (order_id, ordered_by, product_id));";
+    $sql = "CREATE TABLE ordered_items
+            (
+              order_id int(11) NOT NULL,
+              ordered_for int(11) NOT NULL,
+              product_id int(11) NOT NULL,
+              amount int(2) UNSIGNED NOT NULL,
+              UNIQUE (order_id, ordered_for, product_id),
+              FOREIGN KEY (order_id) REFERENCES orders(order_id),
+              FOREIGN KEY (ordered_for) REFERENCES users(user_id),
+              FOREIGN KEY (product_id) REFERENCES products(product_id)
+            );";
     if (!$conn->query($sql)) echoSQLerror($sql, $conn->error);
   }
 
   // create initial order
-  $sql = "INSERT INTO orders (ordered_by, paid_by) VALUES ($uid, $uid) RETURNING order_id;";
+  $sql = "INSERT INTO orders (created_by, paid_by) VALUES ($uid, $uid) RETURNING order_id;";
   if (!$result = $conn->query($sql)) echoSQLerror($sql, $conn->error);
 
   $order_id = $result->fetch_assoc()["order_id"];
@@ -92,7 +145,7 @@ if ($method == "GET") {
     unset($k2, $v2);
   }
 
-  echoResponse("craeted order");
+  echoResponse(array("order_id" => $order_id));
   // verify required data
   // check table exists
   // json decode ordered products
