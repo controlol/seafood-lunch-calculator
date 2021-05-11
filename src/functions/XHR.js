@@ -24,7 +24,7 @@ const XHR = ({ method, url, data, params, headers }, withBearer = "andRefresh", 
   return axios(XHRconfig)
   .then(res => resolve(res))
   .catch(err => {
-    if (err.response && err.response.status === 401 && withBearer === "andRefresh") // do not refresh the token when we don't want to, this can create a infinite loop on the login page
+    if (err.response?.status === 401 && withBearer === "andRefresh") // do not refresh the token when we don't want to, this can create a infinite loop on the login page
       return doRefreshToken(err)
       .then(token => {
         XHRconfig.headers.Authorization = "Bearer " + token
@@ -39,7 +39,7 @@ const XHR = ({ method, url, data, params, headers }, withBearer = "andRefresh", 
 })
 
 const doRefreshToken = err => new Promise((resolve, reject) => {
-  if (err.response && err.response.data.error === "jwt expired") {
+  if (err.response?.data?.error === "jwt expired") {
     const refreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken')
 
     if (!refreshToken) {

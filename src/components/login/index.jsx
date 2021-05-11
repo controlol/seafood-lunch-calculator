@@ -29,7 +29,7 @@ class Login extends Component {
       url: "user/logintoken.php",
     }
 
-    return XHR(XHRconfig)
+    return XHR(XHRconfig, "withBearer")
     .then(() => {
       this.setState({ loggedIn: true })
       if (this.props.history.location.pathname === "/") this.props.history.push("/orders")
