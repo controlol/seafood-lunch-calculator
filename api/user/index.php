@@ -1,20 +1,19 @@
 <?php
 
 require_once "../include/dbh.php";
+require_once "../include/jwt.php";
 require_once "../include/encrypt.php";
 require_once "../include/echoResponse.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 
+// $uid = verifyJWT();
+
 if ($method == "GET") {
   // return user info
-  require_once "../friend.php";
+  require_once "../friend/function.php";
 
-  if (!isset($_GET["user_id"])) echoMissingData("user_id");
-  $user_id = $_GET["user_id"];
-  if (!is_numeric($user_id)) echoInvalidData("user_id");
-
-  $sql = "SELECT username, avatar, fullname FROM users WHERE user_id = $user_id;";
+  $sql = "SELECT username, avatar, fullname FROM users WHERE user_id = $uid;";
   if (!$result = $conn->query($sql)) echoSQLerror($sql, $conn->error);
 
   if ($result->num_rows == 1) {
@@ -24,9 +23,10 @@ if ($method == "GET") {
     $fullname = $r["fullname"];
 
     $friendArr = array();
-    fetchUserFriends($friendArr, $user_id);
+    fetchUserFriends($friendArr, $uid);
 
     $res = array(
+      "id" => $uid,
       "username" => $username,
       "avatar" => $avatar,
       "fullname" => $fullname,
