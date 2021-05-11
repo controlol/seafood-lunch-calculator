@@ -6,13 +6,21 @@ export const UserContainer = styled(ListItemWrapper)`
   justify-content: unset;
   flex-direction: column;
   border-radius: .25rem;
+  background: var(--background-gradient-medium);
+  margin-bottom: 1rem;
+  box-shadow: unset;
 `
 
 export const AddUserWrapper = styled.div`
-  background: var(--background-gradient-medium);
+  background: var(--background-gradient-light);
   padding: 0.1rem .5rem;
   margin-top: 2rem;
   border-radius: .25rem;
+  position: sticky;
+  top: 4rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--simple-shadow);
 `
 
 export const ItemGrid = styled(ListItemWrapper)`
@@ -54,4 +62,45 @@ export const AmountInput = styled(Input)`
   padding: .2rem .5rem;
   border: unset;
   text-align: center;
+`
+
+export const TotalText = styled.strong`
+  margin: .5rem;
+  text-align: end;
+  display: block;
+`
+
+export const OrderItemList = styled(ListItemWrapper)`
+  cursor: pointer;
+`
+
+export const OrderUserGrid = styled.div`
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: max-content auto;
+  gap: .5rem 1rem;
+`
+
+export const OrderPaymentGrid = styled(OrderUserGrid)`
+  grid-template-columns: max-content 5rem;
+`
+
+export const OrderSummaryItem = styled(ItemGrid)`
+  grid-template-columns: auto 10rem 5rem;
+`
+
+export const OrderTitleAmount = styled.div`
+  display: flex;
+  gap: .5rem;
+`
+
+export const OrderSummaryHeader = styled.div`
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+
+  @media only screen and (max-width: 600px) {
+    flex-direction: column;
+  }
 `

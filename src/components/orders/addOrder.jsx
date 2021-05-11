@@ -1,61 +1,19 @@
 import { Component, createRef } from 'react'
 import XHR from '../../functions/XHR'
+import createPriceString from '../../functions/price'
 
-import { Input, Label } from '../../styled/Form'
+import { Button, Input, Label } from '../../styled/Form'
 
 import { Header } from '../../styled/General'
 import { ListContainer } from '../../styled/List'
 import AddOrderUser from './addOrderUser'
 import { SimpleFormGridResponsive } from '../../styled/Grid'
-import { AddUserWrapper } from './styled'
+import { AddUserWrapper, TotalText } from './styled'
 
 class AddOrder extends Component {
   constructor() {
     super()
     this.state = {
-      products: [
-        // {
-        //   id: 1,
-        //   name: "pizza",
-        //   takeaway_name: "adam",
-        //   takeaway_id: 2,
-        //   price: 1000
-        // },
-        // {
-        //   id: 2,
-        //   name: "kapsalon",
-        //   takeaway_name: "adam",
-        //   takeaway_id: 2,
-        //   price: 900
-        // },
-        // {
-        //   id: 3,
-        //   name: "pasta",
-        //   takeaway_name: "adam",
-        //   takeaway_id: 2,
-        //   price: 1150
-        // }
-      ],
-      friends: [
-        // {
-        //   id: 1,
-        //   username: "dikzak",
-        //   pending: false,
-        //   avatar: ""
-        // },
-        // {
-        //   id: 2,
-        //   username: "nietdik",
-        //   pending: false,
-        //   avatar: ""
-        // },
-        // {
-        //   id: 3,
-        //   username: "koosje",
-        //   pending: false,
-        //   avatar: ""
-        // }
-      ],
       order: {}
     }
 
@@ -67,40 +25,23 @@ class AddOrder extends Component {
     // order[1] = {}
     // order[1][1] = 3
     // this.setState({ order })
-
-    XHR({
-      method: "GET",
-      url: "friend.php"
-    })
-    .then(response => {
-      if (typeof response.data === "object") this.setState({ friends: response.data })
-    })
-    .catch(err => {})
-
-    XHR({
-      method: "GET",
-      url: "product/list.php"
-    })
-    .then(response => {
-      if (typeof response.data === "object") this.setState({ products: response.data })
-    })
-    .catch(err => {})
   }
 
   addOrderUser = () => {
     const username = this.newUserRef.current.value,
-          uid = this.state.friends.filter(v => v.username === username)[0].id
+          uid = this.props.friends.filter(v => v.username === username)[0]?.id
 
     if (!uid) return;
 
     let order = this.state.order
-    order[uid] = []
+    order[uid] = {}
     this.setState({ order })
+    this.newUserRef.current.value = ""
   }
 
   changeUser = (olduid, {target}) => {
     const username = target.value,
-          newuid = this.state.friends.filter(v => v.username === username)[0].id
+          newuid = this.props.friends.filter(v => v.username === username)[0]?.id
     if (!newuid || olduid === newuid) return;
     let order = this.state.order
     delete Object.assign(order, {[newuid]: order[olduid] })[olduid]
@@ -109,11 +50,10 @@ class AddOrder extends Component {
 
   addItem = (uid, {target}) => {
     const itemName = target.value,
-          item = this.state.products.filter(v => v.name === itemName)[0]
+          item = this.props.products.filter(v => v.name === itemName)[0]
     if (!item) return false
     let order = this.state.order
     order[uid][item.id] = 1
-    // order[uid].push(Object.assign({ amount: 1 }, item))
     this.setState({ order })
     return true
   }
@@ -121,7 +61,7 @@ class AddOrder extends Component {
   // this function is totally not working as of now, typing in the item box wont allow you to change anything
   changeItem = (uid, oldid, {target}) => {
     const itemName = target.value,
-          newItem = this.state.products.filter(v => v.name === itemName)[0]
+          newItem = this.props.products.filter(v => v.name === itemName)[0]
     if (!newItem || newItem.id === oldid) return;
     let order = this.state.order
     let oldItem = order[uid].filter(v => v.id === oldid)[0]
@@ -144,14 +84,64 @@ class AddOrder extends Component {
     this.setState({ order })
   }
 
-  renderFriendsOptionList = () => this.state.friends.filter(v => Object.keys(this.state.order).filter(o => (Number)(v.id) === (Number)(o)).length === 0 && v.pending === false).map(v => <option key={"friend_" + v.id} value={v.username}> { v.username } </option>)
+  saveOrder = () => {
+    return XHR({
+      method: "PUT",
+      url: "order/index.php",
+      data: this.state.order
+    })
+    .then(response => {
+      if (response.data.order_id) {
+        this.props.addOrder({
+          created_by: this.props.friends[this.props.friends.length - 1].id,
+          paid_by: this.props.friends[this.props.friends.length - 1].id,
+          paid_amount: 0,
+          date: new Date().toLocaleString(),
+          items: this.state.order
+        }, response.data.order_id)
+        this.setState({ order: {} })
+      }
+    })
+    .catch(err => {})
+  }
+
+  renderFriendsOptionList = () => this.props.friends.filter(v => Object.keys(this.state.order).filter(o => (Number)(v.id) === (Number)(o)).length === 0 && v.pending === false).map(v => <option key={"friend_" + v.id} value={v.username}> { v.username } </option>)
 
   render() {
-    const { products, friends, order } = this.state
+    const { order } = this.state
+    const { products, friends } = this.props
+
+    let totalOrderPrice = 0
+    Object.values(order).forEach(u => {
+      Object.keys(u).forEach(v => {
+        const amount = u[v],
+              price = products.filter(p => (Number)(p.id) === (Number)(v))[0].price
+
+        totalOrderPrice += amount * price
+      })
+    })
 
     return (
       <ListContainer>
         <Header> Add order </Header>
+
+        {
+          friends.filter(v => Object.keys(this.state.order).filter(o => (Number)(v.id) === (Number)(o)).length === 0 && v.pending === false).length > 0 &&
+          <AddUserWrapper>
+            {
+              friends.length > 1 &&
+                <SimpleFormGridResponsive>
+                  <Label htmlFor="newUser" style={{ fontSize: "1.2rem" }}> Add user </Label>
+                  <Input ref={this.newUserRef} id="newUser" autoComplete="off" onChange={this.addOrderUser} list="friend-list" />
+                </SimpleFormGridResponsive>
+            }
+
+            {
+              friends.length === 1 &&
+              <h3 style={{ textAlign: "center", padding: "1rem" }}> To create an order you need to add friends first </h3>
+            }
+          </AddUserWrapper>
+        }
 
         {
           Object.keys(order).map(k => {
@@ -174,13 +164,12 @@ class AddOrder extends Component {
           })
         }
 
+        <TotalText> Estimated order total: { createPriceString(totalOrderPrice) } </TotalText>
+
         {
-          friends.filter(v => Object.keys(this.state.order).filter(o => (Number)(v.id) === (Number)(o)).length === 0 && v.pending === false).length > 0 &&
+          totalOrderPrice > 0 &&
           <AddUserWrapper>
-            <SimpleFormGridResponsive>
-              <Label htmlFor="newUser" style={{ fontSize: "1.2rem" }}> Add user </Label>
-              <Input ref={this.newUserRef} id="newUser" autoComplete="off" onChange={this.addOrderUser} list="friend-list" />
-            </SimpleFormGridResponsive>
+            <Button onClick={this.saveOrder}> Save order </Button>
           </AddUserWrapper>
         }
 

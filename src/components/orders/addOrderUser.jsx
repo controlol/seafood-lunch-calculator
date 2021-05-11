@@ -1,10 +1,10 @@
-import { Component, Fragment } from 'react'
+import { Component, createRef, Fragment } from 'react'
 import createPriceString from '../../functions/price'
 
 import { Label, Select, Input } from '../../styled/Form'
 import { SimpleFormGridResponsive } from '../../styled/Grid'
 import AddOrderItem from './addOrderItem'
-import { UserContainer } from './styled'
+import { TotalText, UserContainer } from './styled'
 
 class AddOrderUser extends Component {
   constructor() {
@@ -12,7 +12,11 @@ class AddOrderUser extends Component {
     this.state = {
       newItem: ""
     }
+
+    this.addItemRef = createRef()
   }
+
+  componentDidMount = () => this.addItemRef.current.focus()
 
   itemInputChange = e => {
     if (this.props.addItem(e)) return this.setState({ newItem: "" })
@@ -45,7 +49,7 @@ class AddOrderUser extends Component {
             filteredProudcts.length > 0 &&
             <Fragment>
               <Label htmlFor={"addItem_" + uid}> Add Item </Label>
-              <Input id={"addItem_" + uid} autoComplete="off" onChange={this.itemInputChange} value={this.state.newItem} list={"addItemList_" + uid} />
+              <Input ref={this.addItemRef} id={"addItem_" + uid} autoComplete="off" onChange={this.itemInputChange} value={this.state.newItem} list={"addItemList_" + uid} />
             </Fragment>
           }
         </SimpleFormGridResponsive>
@@ -61,7 +65,7 @@ class AddOrderUser extends Component {
           })
         }
 
-        <strong style={{ margin: ".3rem" }}> Total: { createPriceString(userPrice) } </strong>
+        <TotalText> Total: { createPriceString(userPrice) } </TotalText>
 
         <datalist id={"addItemList_" + uid}>
           { filteredProudcts.map(v => <option key={"product_" + v.id} value={v.name}> { v.takeaway_name + " - " + createPriceString(v.price) } </option>) }

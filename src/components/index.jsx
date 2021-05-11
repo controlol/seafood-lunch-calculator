@@ -61,7 +61,7 @@ class PageRouter extends Component {
         <Main>
           <MainContainer>
             <Switch>
-              <Route path="/orders" component={Orders} />
+              <Route path="/orders/:orderId?/:edit?" component={Orders} />
               <Route path="/products" component={Products} />
               <Route path="/takeaways" component={Takeaways} />
               <Route path="/account" component={Account} />
