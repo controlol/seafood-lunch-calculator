@@ -1,4 +1,4 @@
-import { Component, createRef } from 'react'
+import { Component, createRef, Fragment } from 'react'
 import XHR from '../../functions/XHR'
 import createPriceString from '../../functions/price'
 
@@ -50,12 +50,21 @@ class AddOrder extends Component {
     this.setState({ order })
   }
 
+  deleteUser = uid => {
+    let order = this.state.order
+    delete order[uid]
+    this.setState({ order })
+  }
+
   addItem = (uid, {target}) => {
     const itemName = target.value,
           item = this.props.products.filter(v => v.name === itemName)[0]
     if (!item) return false
     let order = this.state.order
-    order[uid][item.id] = 1
+    // Object.assign(order[uid], { [item.id]: 1 })
+    order[uid] = { ...order[uid], [item.id]: 1 }
+    // order[uid][item.id] = 1
+    console.log(order)
     this.setState({ order })
     return true
   }
@@ -144,7 +153,7 @@ class AddOrder extends Component {
           .filter(uid => 
             Object.keys(this.state.order)
             .filter(o => (Number)(uid) === (Number)(o)).length === 0).length > 0 &&
-          <AddUserWrapper>
+          <Fragment>
             {
               Object.keys(friends).length > 1 &&
                 <SimpleFormGridResponsive>
@@ -157,39 +166,51 @@ class AddOrder extends Component {
               Object.keys(friends).length === 1 &&
               <h3 style={{ textAlign: "center", padding: "1rem" }}> To create an order you need to add friends first </h3>
             }
-          </AddUserWrapper>
+          </Fragment>
         }
 
         {
-          Object.keys(order).map(k => {
-            const v = order[k]
-            const username = friends[k].username
-            // const username = friends.filter(v => (Number)(v.id) === (Number)(k))[0].username
+          Object.keys(order).map(uid => {
+            const v = order[uid]
+            const username = friends[uid].username
+            // const username = friends.filter(v => (Number)(v.id) === (Number)(uid))[0].username
 
             return <AddOrderUser
-              key={"order" + k}
+              key={"order" + uid}
               items={v}
               products={products}
               username={username}
-              uid={k}
+              uid={uid}
               renderFriendsOptionList={this.renderFriendsOptionList}
-              changeUser={e => this.changeUser(k, e)}
-              addItem={e => this.addItem(k, e)}
-              changeItem={(id, e) => this.changeItem(k, id, e)}
-              deleteItem={id => this.deleteItem(k, id)}
-              changeAmount={(id, e) => this.changeAmount(k, id, e)}
+              changeUser={e => this.changeUser(uid, e)}
+              deleteUser={() => this.deleteUser(uid)}
+              addItem={e => this.addItem(uid, e)}
+              changeItem={(id, e) => this.changeItem(uid, id, e)}
+              deleteItem={id => this.deleteItem(uid, id)}
+              changeAmount={(id, e) => this.changeAmount(uid, id, e)}
             />
           })
         }
 
-        <TotalText> Estimated order total: { createPriceString(totalOrderPrice) } </TotalText>
+        <div style={{
+          display: "grid",
+          gridTemplateRows: "auto",
+          gridTemplateColumns: "1fr 1fr",
+          justifyContent: "flex-end",
+          alignItems: "center"
+        }}>
+          {
+            totalOrderPrice > 0 ?
+            // <AddUserWrapper>
+              <Button style={{ transform: "translateX(50%)", margin: "0 0 0 auto" }} onClick={this.saveOrder}> Save order </Button>
+              :
+              <span/>
+            // </AddUserWrapper>
+          }
 
-        {
-          totalOrderPrice > 0 &&
-          <AddUserWrapper>
-            <Button onClick={this.saveOrder}> Save order </Button>
-          </AddUserWrapper>
-        }
+          <TotalText> Estimated order total: { createPriceString(totalOrderPrice) } </TotalText>
+        </div>
+
 
         <datalist id="friend-list">
           { this.renderFriendsOptionList() }

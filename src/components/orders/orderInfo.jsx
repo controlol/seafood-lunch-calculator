@@ -20,7 +20,6 @@ class OrderInfo extends Component {
       params: { order_id: this.props.orderId }
     })
     .then(response => {
-      console.log(response.data)
       if (typeof response.data === "object") this.setState({ info: response.data })
     })
     .catch(err => {})
@@ -74,7 +73,7 @@ class OrderInfo extends Component {
 
               return (
                 <UserContainer>
-                  <h3> { friends.filter(v => (Number)(v.id) === (Number)(uid))[0]?.username || `unknown (${created_by})` } </h3>
+                  <h3> { friends[uid]?.username || `unknown (${created_by})` } </h3>
 
                   {
                     Object.keys(items).map(k => {

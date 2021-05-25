@@ -2,9 +2,12 @@ import { Component, createRef, Fragment } from 'react'
 import createPriceString from '../../functions/price'
 
 import { Label, Select, Input } from '../../styled/Form'
-import { SimpleFormGridResponsive } from '../../styled/Grid'
+import { SimpleFormGridResponsiveWithButton } from '../../styled/Grid'
 import AddOrderItem from './addOrderItem'
 import { TotalText, UserContainer } from './styled'
+
+import GarbageBin from '../../assets/img/thinOutline/garbageBin.svg'
+import GarbageBinRed from '../../assets/img/thinOutline/garbageBinRed.svg'
 
 class AddOrderUser extends Component {
   constructor() {
@@ -24,7 +27,7 @@ class AddOrderUser extends Component {
   }
 
   render() {
-    const { items, products, username, uid, renderFriendsOptionList, changeUser, changeItem, deleteItem, changeAmount } = this.props
+    const { items, products, username, uid, renderFriendsOptionList, changeUser, deleteUser, changeItem, deleteItem, changeAmount } = this.props
 
     const filteredProudcts = products.filter(v => Object.keys(items).filter(o => (Number)(v.id) === (Number)(o)).length === 0)
 
@@ -38,12 +41,22 @@ class AddOrderUser extends Component {
 
     return (
       <UserContainer>
-        <SimpleFormGridResponsive>
+        <SimpleFormGridResponsiveWithButton>
           <Label htmlFor={"selectedUser_" + uid}> Selected user </Label>
           <Select id={"selectedUser_" + uid} onChange={changeUser} value={username} >
             { renderFriendsOptionList() }
             <option value={username}> { username } </option>
           </Select>
+          <img
+          onClick={deleteUser}
+          onMouseLeave={() => this.setState({ deleteImg: GarbageBin })}
+          onMouseEnter={() => this.setState({ deleteImg: GarbageBinRed })}
+          src={this.state.deleteImg}
+          alt="delete"
+          width="26"
+          height="26"
+          style={{ cursor: "pointer" }}
+        />
 
           {
             filteredProudcts.length > 0 &&
@@ -52,7 +65,7 @@ class AddOrderUser extends Component {
               <Input ref={this.addItemRef} id={"addItem_" + uid} autoComplete="off" onChange={this.itemInputChange} value={this.state.newItem} list={"addItemList_" + uid} />
             </Fragment>
           }
-        </SimpleFormGridResponsive>
+        </SimpleFormGridResponsiveWithButton>
 
         {
           Object.keys(items)

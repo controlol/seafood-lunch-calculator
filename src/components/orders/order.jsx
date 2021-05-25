@@ -2,7 +2,7 @@ import { Component } from 'react'
 import createPriceString from '../../functions/price'
 
 import { ListItemTitleWrapper, ListItemWrapper, RightText } from '../../styled/List'
-import { OrderItemList, OrderPaymentGrid, OrderUserGrid } from './styled'
+import { OrderInfoGrid, OrderItemList, OrderPaymentGrid, OrderUserGrid } from './styled'
 
 class Order extends Component {
   constructor() {
@@ -36,7 +36,7 @@ class Order extends Component {
           <strong> { friends[paid_by]?.username || `unknown (${paid_by})` } </strong>
         </OrderUserGrid>
 
-        <div style={{ display: "flex", gap: "1rem" }}>
+        <OrderInfoGrid>
           <OrderPaymentGrid>
             <p> Paid: </p>
             <strong> { createPriceString(info.paid_amount > 0 ? info.paid_amount : totalOrderPrice) } </strong>
@@ -44,7 +44,7 @@ class Order extends Component {
             <p> { createPriceString(totalOrderPrice) } </p>
           </OrderPaymentGrid>
           <p> { new Date(date).toLocaleString() } </p>
-        </div>
+        </OrderInfoGrid>
       </OrderItemList>
     )
   }

@@ -81,6 +81,13 @@ export const OrderUserGrid = styled.div`
   gap: .5rem 1rem;
 `
 
+export const OrderInfoGrid = styled.div`
+  display: grid;
+  gap: 1rem;
+  grid-template-rows: auto;
+  grid-template-columns: max-content 6rem;
+`
+
 export const OrderPaymentGrid = styled(OrderUserGrid)`
   grid-template-columns: max-content 5rem;
 `
